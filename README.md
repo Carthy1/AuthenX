@@ -1,23 +1,21 @@
-# 🛡️ AuthenX: Decentralized Academic Credential Verification
+# AuthenX: Decentralized Academic Credential Verification
 
-AuthenX is an enterprise-grade academic credential verification platform designed to completely eliminate diploma fraud. By combining the speed of a Web2 frontend (React + Firebase) with the cryptographic immutability of Web3 (Solidity + IPFS), AuthenX empowers authorized institutions to issue digital credentials that can be instantly and mathematically verified by employers.
+AuthenX is an academic credential verification platform designed to prevent diploma fraud. It uses a React frontend, Firebase for data management, and Solidity smart contracts to ensure credentials are secure and verifiable.
 
-## 🔗 Live Application
-**Hosted Link:** `[INSERT VERCEL LINK HERE]`
+## Live Application
+Hosted Link: https://authen-x-git-main-carthy1s-projects.vercel.app/
 
-## 👥 The Team
-- **[MacCarthy Collins Setor]**: [Group Leader]
+## The Team
+- MacCarthy Collins Setor: Group Leader
 
-## 🏗️ System Architecture
-The platform operates on a hybrid Web2/Web3 architecture:
-*   **The Governance Terminal (React Frontend):** A modern, glassmorphic UI built around Role-Based Access Control (RBAC).
-*   **The Consensus Ledger (Solidity Smart Contracts):** The immutable Source of Truth ensuring only approved institutional nodes can issue credentials.
-*   **The Database (Firebase Firestore):** High-speed layer ensuring rapid UI performance and metadata tracking.
-*   **Decentralized Storage (IPFS/Pinata):** Digital artifacts are pinned to the InterPlanetary File System.
+## System Architecture
+The platform is built using the following technologies:
+*   Frontend: React interface with Role-Based Access Control (RBAC).
+*   Smart Contracts: Solidity contracts for issuing and verifying credentials.
+*   Database: Firebase Firestore for application data.
+*   Storage: IPFS (via Pinata) for storing digital credentials.
 
-## 🚀 How to Run Locally
-
-If you are a technical reviewer and wish to run the stack locally:
+## How to Run Locally
 
 ### 1. Clone & Install
 ```bash
@@ -42,4 +40,4 @@ npx hardhat run scripts/deploy.js --network localhost
 ```
 
 ---
-*Built for the AmaliTech Project Submission.*
+Built for the AmaliTech Project Submission.
