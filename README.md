@@ -6,8 +6,7 @@ AuthenX is an enterprise-grade academic credential verification platform designe
 **Hosted Link:** `[INSERT VERCEL LINK HERE]`
 
 ## 👥 The Team
-- **[INSERT NAME]**: [INSERT ROLE] (e.g., Fullstack Developer)
-- **[INSERT NAME]**: [INSERT ROLE] (e.g., Smart Contract Architect)
+- **[MacCarthy Collins Setor]**: [Group Leader]
 
 ## 🏗️ System Architecture
 The platform operates on a hybrid Web2/Web3 architecture:
