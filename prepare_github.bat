@@ -14,7 +14,7 @@ git branch -M main
 
 echo Configuring Remote Origin...
 git remote remove origin
-git remote add origin https://github.com/Carthy1/AuthenX.git
+git remote add origin git@github.com:Carthy1/AuthenX.git
 
 echo Pushing Code to GitHub...
 git push -u origin main
