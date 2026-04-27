@@ -1,0 +1,91 @@
+<h1>AuthenX: Academic Credential Verification Platform</h1>
+<p><strong>System Documentation &amp; Architectural Overview</strong></p>
+<h2>1. Executive Summary</h2>
+<p>AuthenX is a next-generation academic credential verification platform designed to eliminate fraud and build trust in digital systems. It empowers authorized institutions to issue cryptographically secure digital credentials that can be instantly verified by employers and external parties with absolute mathematical confidence.</p>
+<h2>2. System Architecture</h2>
+<p>The platform operates on a hybrid Web2/Web3 architecture, utilizing centralized high-speed databases for dashboard analytics and decentralized node networks for permanent data immutability.</p>
+<h3>2.1 Core Components</h3>
+<ul>
+<li><strong>The Governance Terminal (React Frontend):</strong> A modern, glassmorphic User Interface built tightly around Role-Based Access Control (RBAC). It serves all interacting nodes: Public Verifiers, Institutional Registrars, and the Global SuperAdmin.</li>
+<li><strong>The Consensus Ledger (Blockchain):</strong> Implemented via localized Hardhat Solidity Smart Contracts. It acts as the immutable Source of Truth. The contract strictly restricts the <code>issueCertificate</code> function to wallets holding the cryptographically signed <code>ISSUER_ROLE</code>.</li>
+<li><strong>The Relational Database (Firebase Firestore):</strong> Acts as the high-speed caching layer ensuring rapid UI performance. It logs real-time metadata, user profile logic, and audit trails without forcing the user to endure slow blockchain read times for standard UI interactions.</li>
+<li><strong>The Distributed File System (IPFS via Pinata):</strong> Digital artifacts (PDF/PNG) are heavily compressed and pinned to the InterPlanetary File System. IPFS returns a unique content-identifier (hash) that is then minted to the blockchain.</li>
+</ul>
+<h2>3. Governance &amp; Access Control (RBAC)</h2>
+<p>The system adheres to a strict hierarchical security model governed by the <strong>Trust Council</strong> (SuperAdmin).</p>
+<blockquote>
+<p>[!IMPORTANT]
+<strong>No public sign-ups are permitted into the active ecosystem.</strong> All generic authentication bypassing (such as open Google SSO) has been structurally ripped out and disabled. SSO is exclusively reserved for mapping existing, pre-approved institutional emails to the cloud.</p>
+</blockquote>
+<h3>3.1 The Institutional Onboarding Flow</h3>
+<ol>
+<li><strong>Application:</strong> An institution (e.g., University Registrar) submits an application via the Auth Modal, uploading their official accreditation evidence to IPFS.</li>
+<li><strong>Cryptographic Limbo:</strong> The account is initialized in a locked <code>pending</code> state. They cannot access the network, issue credentials, or bypass the lock.</li>
+<li><strong>Trust Council Review:</strong> A SuperAdmin logs into the Global Command Center, reviews the provided IPFS evidence, and executes an approval.</li>
+<li><strong>Network Activation:</strong> The node state transitions to <code>active</code>, granting the institution access to the <code>Dashboard</code> and the Minting Pipeline.</li>
+<li><strong>Revocation:</strong> The Trust Council maintains absolute authority to flag a node as <code>suspended</code>—instantly disabling server-side reads/writes and permanently locking their dashboard interface in real-time.</li>
+</ol>
+<h2>4. Primary Workflows</h2>
+<h3>4.1 Cryptographic Issuance Pipeline (Minting)</h3>
+<p>Authorized institutional nodes can issue degrees via two dedicated pipelines:</p>
+<ul>
+<li><strong>Single Issue:</strong> A localized form capturing CertID, Student Name, Matriculation Vector, and the visual layout (PNG/PDF).</li>
+<li><strong>Batch CSV:</strong> A highly efficient mass-minting protocol. Registrars upload a CSV schema containing thousands of student records alongside a zip of imagery. The client-side logic successfully parses, maps, and executes the IPFS push followed sequentially by the Blockchain Minting process in one unified loop.</li>
+</ul>
+<h3>4.2 Global Verification Terminal</h3>
+<p>A public-facing endpoint allowing employers to input a <code>CertID</code>. The system executes a dual-layer check:</p>
+<ol>
+<li>It queries the blockchain ledger directly to verify authenticity.</li>
+<li>Upon a mathematically proven match, the UI renders a highly stylized &quot;Verification Badge&quot; displaying the immutable data payload and returning an &quot;Authentic&quot; visual verification.</li>
+</ol>
+<h3>4.3 Interactive Audit Logging</h3>
+<p>Institutions and SuperAdmins have access to a massive historical timeline of every ledger action. The UI implements a deeply integrated real-time semantic search engine allowing instantaneous forensic filtering of thousands of logs by name, hash, or operator ID.</p>
+<h2>5. Technology Stack Summary</h2>
+<table>
+<thead>
+<tr>
+<th align="left">Layer</th>
+<th align="left">Technology Used</th>
+<th align="left">Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>Frontend Framework</strong></td>
+<td align="left">React.js (v18)</td>
+<td align="left">Component-based UI logic and state.</td>
+</tr>
+<tr>
+<td align="left"><strong>Styling &amp; Assets</strong></td>
+<td align="left">CSS Variables, Glassmorphism, Lucide-React</td>
+<td align="left">Premium B2B aesthetic and dynamic iconography.</td>
+</tr>
+<tr>
+<td align="left"><strong>Authentication</strong></td>
+<td align="left">Firebase Auth</td>
+<td align="left">Secure institutional credential management.</td>
+</tr>
+<tr>
+<td align="left"><strong>Database</strong></td>
+<td align="left">Firebase Firestore</td>
+<td align="left">NoSQL structure for fast UI state retrieval.</td>
+</tr>
+<tr>
+<td align="left"><strong>Blockchain</strong></td>
+<td align="left">Solidity, Hardhat, Ethers.js</td>
+<td align="left">EVM logic, mapping structural hashes to addresses.</td>
+</tr>
+<tr>
+<td align="left"><strong>Decentralized Storage</strong></td>
+<td align="left">IPFS via Pinata API</td>
+<td align="left">Distributed, content-addressed digital artifact pinning.</td>
+</tr>
+</tbody></table>
+<h2>6. Known Trade-Offs &amp; Future Scalability</h2>
+<blockquote>
+<p>[!CAUTION]
+<strong>Data Availability (Pinata vs. Arweave):</strong> The current IPFS pinning relies on a centralized SaaS payment structure (Pinata). If the server ceases, the images are &quot;garbage collected.&quot; <strong>Recommendation for next phase:</strong> Pivot the storage payload pipeline to <strong>Arweave</strong> for 200+ year absolute data permanence without monthly overhead costs.</p>
+</blockquote>
+<blockquote>
+<p>[!TIP]
+<strong>Account Abstraction (Gas Fees):</strong> Currently, institutions must possess Web3 wallets loaded with gas tokens to execute mints. To ensure a flawless Web2 experience going to production, the smart contracts should be integrated with ERC-4337 Paymasters, so AuthenX subsidizes all complex blockchain gas fees under the hood.</p>
+</blockquote>
