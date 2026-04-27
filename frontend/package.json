@@ -21,7 +21,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "npm install firebase ethers && react-scripts build",
+    "build": "npm install firebase ethers && CI=false react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
