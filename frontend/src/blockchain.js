@@ -1,13 +1,11 @@
-import { ethers, FetchRequest } from "ethers";
+import { ethers } from "ethers";
 // We will grab the ABI from the folder you created earlier
 import CertificateABI from "./abis/Certificate.json"; 
-const CONTRACT_ADDRESS = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
+const CONTRACT_ADDRESS = "0x553bB78666718E713FaB911C12c39F9c23Fc8cbb";
 
 export const getContract = async () => {
-  // Connect to the local Hardhat node securely via Localtunnel
-  const req = new FetchRequest("https://quiet-garlics-grab.loca.lt");
-  req.setHeader("Bypass-Tunnel-Reminder", "true");
-  const provider = new ethers.JsonRpcProvider(req);
+  // Connect to the public Celo Sepolia network
+  const provider = new ethers.JsonRpcProvider("https://forno.celo-sepolia.celo-testnet.org");
   
   // Get the signer (Account #0 from your local node)
   const signer = await provider.getSigner();
