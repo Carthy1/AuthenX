@@ -7,7 +7,7 @@ const PRIVATE_KEY = "0x49d06dbec4bc0efc432fed917760a8faba6eb36dc627cc1166abd6ef7
 async function grantRole() {
   try {
     console.log("Connecting...");
-    const provider = new ethers.JsonRpcProvider("https://forno.celo-sepolia.celo-testnet.org");
+    const provider = new ethers.JsonRpcProvider("https://alfajores-forno.celo-testnet.org");
     const signer = new ethers.Wallet(PRIVATE_KEY, provider);
     const contract = new ethers.Contract(CONTRACT_ADDRESS, CertificateABI.abi, signer);
 

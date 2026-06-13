@@ -536,7 +536,7 @@ body.light .shimmer {
 }
 
 .dashboard-page .sidebar {
-  width: 260px;
+  width: 240px;
   height: 100vh;
   position: sticky;
   top: 0;
@@ -545,7 +545,7 @@ body.light .shimmer {
   backdrop-filter: blur(30px);
   -webkit-backdrop-filter: blur(30px);
   border-right: 1px solid var(--glass-border);
-  padding: 30px 20px;
+  padding: 20px 14px;
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
@@ -584,13 +584,13 @@ body.light .shimmer {
 }
 
 .dashboard-page .sidebar ul li {
-  padding: 14px 20px;
-  margin-bottom: 8px;
-  border-radius: 14px;
+  padding: 10px 14px;
+  margin-bottom: 4px;
+  border-radius: 10px;
   cursor: pointer;
   color: var(--text-muted);
   transition: all 0.2s ease;
-  font-size: 15px;
+  font-size: 13.5px;
   font-weight: 600;
   display: flex;
   align-items: center;
@@ -609,61 +609,76 @@ body.light .shimmer {
 }
 
 .dashboard-page .main {
-  flex: 1; padding: 50px; overflow-x: auto;
+  flex: 1; padding: 20px 24px; overflow-x: auto;
 }
 
 .dashboard-page .cards {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px; margin-bottom: 40px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 1200px) {
+  .dashboard-page .cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .dashboard-page .cards {
+    grid-template-columns: 1fr;
+  }
 }
 
 .dashboard-page .dashboard-card {
   background: var(--card-bg);
   backdrop-filter: blur(15px);
-  padding: 24px;
-  border-radius: 20px;
+  padding: 10px 14px;
+  border-radius: 10px;
   border: 1px solid var(--card-border);
   transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
 }
 
 .dashboard-page .dashboard-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
   border-color: rgba(139, 92, 246, 0.4);
 }
 
 .dashboard-page .dashboard-card p {
   color: var(--text-muted);
-  font-size: 13px;
-  margin-bottom: 12px;
+  font-size: 10px;
+  margin-bottom: 4px;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 0.5px;
 }
 
 .dashboard-page .dashboard-card h3 {
-  font-size: 36px;
+  font-size: 20px;
   margin: 0;
   font-weight: 800;
 }
 
 .dashboard-page .content {
-  display: grid; grid-template-columns: 2fr 1fr; gap: 24px;
+  display: grid; grid-template-columns: 2fr 1fr; gap: 16px;
 }
 
 .dashboard-page .grid-2-1 {
-  display: grid; grid-template-columns: 2fr 1fr; gap: 24px;
+  display: grid; grid-template-columns: 2fr 1fr; gap: 16px;
 }
 
 .dashboard-page .grid-1-2 {
-  display: grid; grid-template-columns: 1fr 2fr; gap: 24px;
+  display: grid; grid-template-columns: 1fr 2fr; gap: 16px;
 }
 
 .dashboard-page .grid-1-1 {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
 }
 
 .dashboard-page .grid-3 {
-  display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
 }
 
 .dashboard-page .section-card,
@@ -671,8 +686,8 @@ body.light .shimmer {
 .dashboard-page .alerts {
   background: var(--card-bg);
   backdrop-filter: blur(15px);
-  padding: 30px;
-  border-radius: 20px;
+  padding: 16px 20px;
+  border-radius: 12px;
   border: 1px solid var(--card-border);
 }
 
@@ -874,10 +889,10 @@ body.light .shimmer {
   background: var(--card-bg);
   backdrop-filter: blur(10px);
   border: 1px solid var(--card-border);
-  border-radius: 16px;
-  padding: 24px;
-  margin-top: 25px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  padding: 16px;
+  margin-top: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
 }
 
 /* Cards Hover effects */
@@ -900,8 +915,8 @@ body.light .shimmer {
 }
 .dashboard-card-icon {
   background: rgba(37, 99, 235, 0.1);
-  padding: 12px;
-  border-radius: 14px;
+  padding: 8px;
+  border-radius: 10px;
   color: var(--primary);
   display: flex;
   align-items: center;
@@ -1167,4 +1182,197 @@ body.light .shimmer {
   white-space: normal;
   flex: 1;
   min-width: 200px;
+}
+
+/* =========================================================
+   PUBLIC VERIFICATION PAGE STYLES (.verify-container, etc.)
+   ========================================================= */
+
+.verify-container {
+  min-height: 100vh;
+  background: inherit;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 40px;
+  padding-bottom: 100px;
+  position: relative;
+}
+
+.verify-glow-orb {
+  position: absolute;
+  top: -10%;
+  left: -10%;
+  width: 500px;
+  height: 500px;
+  background: var(--primary);
+  filter: blur(200px);
+  opacity: 0.15;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.back-link {
+  text-decoration: none;
+  color: var(--text-muted);
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: color 0.3s;
+}
+
+.back-link:hover {
+  color: var(--primary);
+}
+
+.verify-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  border: 1px solid var(--glass-border);
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+  width: 90%;
+  max-width: 650px;
+  position: relative;
+  z-index: 10;
+}
+
+.verify-input {
+  flex: 1;
+  padding: 12px 16px;
+  border-radius: 10px;
+  border: 1px solid var(--card-border);
+  font-size: 0.95rem;
+  outline: none;
+  min-width: 250px;
+  background: rgba(0,0,0,0.1);
+  color: var(--text-main);
+  transition: all 0.3s;
+  box-sizing: border-box;
+}
+
+.verify-input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+}
+
+.verify-btn {
+  padding: 12px 24px;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  font-weight: 700;
+  box-shadow: 0 10px 25px rgba(99, 102, 241, 0.4);
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.verify-btn:hover:not(:disabled) {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 30px rgba(99, 102, 241, 0.6);
+}
+
+.verify-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.certificate-display-card {
+  margin-top: 24px;
+  background: var(--card-bg);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+  width: 90%;
+  max-width: 850px;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--card-border);
+}
+
+.certificate-top-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 6px;
+  background-color: var(--success);
+}
+
+.certificate-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.certificate-label {
+  font-size: 0.8rem;
+  margin: 0 0 4px 0;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 700;
+}
+
+.certificate-value {
+  font-size: 1.15rem;
+  font-weight: 800;
+  margin: 0;
+  color: var(--text-main);
+}
+
+.certificate-audit-box {
+  margin-top: 20px;
+  padding: 18px;
+  background: rgba(30, 41, 59, 0.25);
+  border-radius: 10px;
+  border: 1px solid var(--card-border);
+}
+
+/* Spinner Animation & Loaders */
+.spinner {
+  animation: spin 1s linear infinite;
+  display: inline-block;
+}
+
+div.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(139, 92, 246, 0.1);
+  border-left-color: var(--primary);
+  border-radius: 50%;
+  margin: 0 auto 15px auto;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Micro-animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in-up {
+  animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }

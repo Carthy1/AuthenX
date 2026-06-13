@@ -14,7 +14,7 @@ function Navbar({ toggleTheme, theme, openModal, user, setUser, isMobileMenuOpen
         await updateDoc(doc(db, "users", user.uid), { isOnline: false });
       } catch (e) {}
     }
-    localStorage.removeItem("user");
+    sessionStorage.removeItem("user");
     setUser(null);
     window.location.href = "/";
   };
@@ -33,7 +33,7 @@ function Navbar({ toggleTheme, theme, openModal, user, setUser, isMobileMenuOpen
             <a href="#how">Features</a>
           </>
         ) : (
-          <span style={{ fontWeight: "700", color: "var(--primary)", fontSize: "1.1rem", letterSpacing: "0.5px" }}>
+          <span style={{ fontWeight: "700", color: "var(--text-main)", fontSize: "1.1rem", letterSpacing: "0.5px" }}>
             {user?.role === "superadmin" ? "AuthenX Global Control" : user.institution}
           </span>
         )}

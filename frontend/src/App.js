@@ -34,7 +34,7 @@ function App() {
   /* ✅ SAFE USER STATE */
   /* ========================= */
   const [user, setUser] = useState(() => {
-    const stored = localStorage.getItem("user");
+    const stored = sessionStorage.getItem("user");
     try {
       const parsed = JSON.parse(stored);
       return parsed && parsed.email ? parsed : null;
@@ -47,7 +47,7 @@ function App() {
   /* ✅ LOAD USER ON REFRESH */
   /* ========================= */
   useEffect(() => {
-    const stored = localStorage.getItem("user");
+    const stored = sessionStorage.getItem("user");
     try {
       const parsed = JSON.parse(stored);
       if (parsed && parsed.email) {
@@ -64,7 +64,7 @@ function App() {
   /* ✅ UPDATE USER AFTER LOGIN */
   /* ========================= */
   window.updateUser = () => {
-    const stored = localStorage.getItem("user");
+    const stored = sessionStorage.getItem("user");
     try {
       const parsed = JSON.parse(stored);
       if (parsed && parsed.email) {
@@ -76,6 +76,52 @@ function App() {
       setUser(null);
     }
   };
+
+  /* ========================= */
+  /* ✅ INACTIVITY WATCHDOG */
+  /* ========================= */
+  useEffect(() => {
+    if (!user) return;
+
+    let timeoutId;
+    const INACTIVITY_TIMEOUT = 15 * 60 * 1000; // 15 minutes
+
+    const resetTimer = () => {
+      if (timeoutId) clearTimeout(timeoutId);
+      timeoutId = setTimeout(handleInactivityLogout, INACTIVITY_TIMEOUT);
+    };
+
+    const handleInactivityLogout = async () => {
+      if (window.isAuthenxProcessOngoing) {
+        console.warn("Inactivity logout postponed: an AuthenX process is currently ongoing.");
+        // Check again in 1 minute to avoid checking too frequently
+        timeoutId = setTimeout(handleInactivityLogout, 60 * 1000);
+        return;
+      }
+
+      console.log("User inactive for 15 minutes. Logging out.");
+      if (user && user.uid && user.email !== "demo@demo.com" && user.email !== "gtec@demo.com") {
+        try {
+          await updateDoc(doc(db, "users", user.uid), { isOnline: false });
+        } catch (e) {}
+      }
+      sessionStorage.removeItem("user");
+      setUser(null);
+      window.location.href = "/";
+    };
+
+    // Events to monitor activity
+    const events = ["mousemove", "mousedown", "keypress", "scroll", "click", "touchstart"];
+    events.forEach(event => window.addEventListener(event, resetTimer));
+
+    // Initialize timer
+    resetTimer();
+
+    return () => {
+      if (timeoutId) clearTimeout(timeoutId);
+      events.forEach(event => window.removeEventListener(event, resetTimer));
+    };
+  }, [user]);
 
   /* ========================= */
   /* ✅ PRESENCE TRACKING */

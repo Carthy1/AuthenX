@@ -18,8 +18,12 @@ const factory = new ethers.ContractFactory(artifact.abi, artifact.bytecode, sign
 const certificate = await factory.deploy();
 
 await certificate.waitForDeployment();
+const address = await certificate.getAddress();
+console.log("4. SUCCESS! Certificate deployed to:", address);
 
-console.log("4. SUCCESS! Certificate deployed to:", await certificate.getAddress());
+// Save the address
+fs.writeFileSync("deployed_address.txt", address);
+fs.writeFileSync("./frontend/src/abis/deployed_address.json", JSON.stringify({ address }, null, 2));
 
 console.log("5. Granting ISSUER_ROLE to the deployer...");
 const ISSUER_ROLE = await certificate.ISSUER_ROLE();

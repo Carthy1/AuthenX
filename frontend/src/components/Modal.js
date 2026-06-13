@@ -86,7 +86,7 @@ function Modal({ type, close }) {
   }, [schoolQuery, institution]);
 
   const finalizeLogin = (userData) => {
-    localStorage.setItem("user", JSON.stringify(userData));
+    sessionStorage.setItem("user", JSON.stringify(userData));
     // Trigger any global state updates if needed
     if (window.updateUser) window.updateUser();
     close();

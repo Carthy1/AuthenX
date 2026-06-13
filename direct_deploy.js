@@ -7,7 +7,7 @@ dotenv.config();
 async function main() {
   console.log("Starting direct deployment to Celo Sepolia...");
   
-  const provider = new ethers.JsonRpcProvider("https://forno.celo-sepolia.celo-testnet.org");
+  const provider = new ethers.JsonRpcProvider("https://alfajores-forno.celo-testnet.org");
   const privateKey = process.env.DEPLOYER_PRIVATE_KEY;
   
   if (!privateKey) {
@@ -40,6 +40,7 @@ async function main() {
   
   // Save the address
   fs.writeFileSync("deployed_address.txt", address);
+  fs.writeFileSync("./frontend/src/abis/deployed_address.json", JSON.stringify({ address }, null, 2));
 }
 
 main().catch(console.error);
