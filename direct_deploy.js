@@ -7,7 +7,7 @@ dotenv.config();
 async function main() {
   console.log("Starting direct deployment to Celo Sepolia...");
   
-  const provider = new ethers.JsonRpcProvider("https://alfajores-forno.celo-testnet.org");
+  const provider = new ethers.JsonRpcProvider("https://forno.celo-sepolia.celo-testnet.org");
   const privateKey = process.env.DEPLOYER_PRIVATE_KEY;
   
   if (!privateKey) {

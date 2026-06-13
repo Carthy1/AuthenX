@@ -18,9 +18,9 @@ const config: HardhatUserConfig = {
   networks: {
     celo_sepolia: {
       type: "http",
-      url: "https://alfajores-forno.celo-testnet.org",
+      url: "https://forno.celo-sepolia.celo-testnet.org",
       accounts: process.env.DEPLOYER_PRIVATE_KEY ? [process.env.DEPLOYER_PRIVATE_KEY] : [],
-      chainId: 44787
+      chainId: 11142220
     }
   }
 };

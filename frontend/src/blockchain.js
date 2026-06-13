@@ -8,10 +8,9 @@ const LOCAL_KEY = "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f
 
 // Public Production Web Settings (Celo Sepolia Testnet)
 const CELO_RPCS = [
-  "https://alfajores-forno.celo-testnet.org",
-  "https://celo-alfajores-rpc.publicnode.com",
-  "https://celo-alfajores.drpc.org",
-  "https://rpc.ankr.com/celo_alfajores"
+  "https://forno.celo-sepolia.celo-testnet.org",
+  "https://celo-sepolia.drpc.org",
+  "https://celo-sepolia.publicnode.com"
 ];
 const CELO_CONTRACT = "0x553bB78666718E713FaB911C12c39F9c23Fc8cbb";
 const CELO_KEY = "0x49d06dbec4bc0efc432fed917760a8faba6eb36dc627cc1166abd6ef7df1f43a";
