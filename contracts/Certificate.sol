@@ -2,8 +2,9 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/access/AccessControl.sol";
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
-contract Certificate is AccessControl {
+contract Certificate is AccessControl, ERC721 {
     bytes32 public constant ISSUER_ROLE = keccak256("ISSUER_ROLE");
 
     // Custom Errors for Gas Optimization
@@ -18,10 +19,11 @@ contract Certificate is AccessControl {
         string degree,
         string ipfsHash,
         string institution,
+        address indexed studentWallet,
         address indexed issuer
     );
 
-    constructor() {
+    constructor() ERC721("AuthenX Credential", "AUTHX") {
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
     }
 
@@ -30,25 +32,52 @@ contract Certificate is AccessControl {
         string matricNumber;
         string degree;
         string ipfsHash;
-        string institution; // ✅ Added field for school name
+        string institution;
+        address studentWallet; 
         address issuer;  
     }
 
     mapping(string => Cert) private certificates;
 
-    // Issue a new certificate
+    // Override transfer functions to make tokens non-transferable (Soulbound)
+    function transferFrom(address from, address to, uint256 tokenId) public override {
+        revert("Err: Soulbound tokens cannot be transferred.");
+    }
+    
+    function safeTransferFrom(address from, address to, uint256 tokenId) public override {
+        revert("Err: Soulbound tokens cannot be transferred.");
+    }
+
+    function safeTransferFrom(address from, address to, uint256 tokenId, bytes memory data) public override {
+        revert("Err: Soulbound tokens cannot be transferred.");
+    }
+
+    // Override approvals to prevent market listings
+    function approve(address to, uint256 tokenId) public override {
+        revert("Err: Soulbound tokens cannot be approved.");
+    }
+
+    function setApprovalForAll(address operator, bool approved) public override {
+        revert("Err: Soulbound tokens cannot be approved.");
+    }
+
+    // Issue a new certificate SBT
     function issueCertificate(
         string calldata _id,
         string calldata _studentName,
         string calldata _matricNumber,
         string calldata _degree,
         string calldata _ipfsHash,
-        string calldata _institution
+        string calldata _institution,
+        address _studentWallet
     ) external onlyRole(ISSUER_ROLE) {
         // Prevent overwriting existing certificates
         if (bytes(certificates[_id].studentName).length != 0) {
             revert CertificateAlreadyExists(_id);
         }
+
+        uint256 tokenId = uint256(keccak256(abi.encodePacked(_id)));
+        _safeMint(_studentWallet, tokenId);
 
         certificates[_id] = Cert(
             _studentName,
@@ -56,10 +85,11 @@ contract Certificate is AccessControl {
             _degree,
             _ipfsHash,
             _institution,
+            _studentWallet,
             msg.sender
         );
 
-        emit CertificateIssued(_id, _studentName, _matricNumber, _degree, _ipfsHash, _institution, msg.sender);
+        emit CertificateIssued(_id, _studentName, _matricNumber, _degree, _ipfsHash, _institution, _studentWallet, msg.sender);
     }
 
     // Issue multiple certificates in a single transaction (batch minting)
@@ -69,14 +99,16 @@ contract Certificate is AccessControl {
         string[] calldata _matricNumbers,
         string[] calldata _degrees,
         string[] calldata _ipfsHashes,
-        string calldata _institution
+        string calldata _institution,
+        address[] calldata _studentWallets
     ) external onlyRole(ISSUER_ROLE) {
         uint256 total = _ids.length;
         if (
             total != _studentNames.length ||
             total != _matricNumbers.length ||
             total != _degrees.length ||
-            total != _ipfsHashes.length
+            total != _ipfsHashes.length ||
+            total != _studentWallets.length
         ) {
             revert ArrayLengthMismatch();
         }
@@ -87,16 +119,20 @@ contract Certificate is AccessControl {
                 revert CertificateAlreadyExists(_id);
             }
 
+            uint256 tokenId = uint256(keccak256(abi.encodePacked(_id)));
+            _safeMint(_studentWallets[i], tokenId);
+
             certificates[_id] = Cert(
                 _studentNames[i],
                 _matricNumbers[i],
                 _degrees[i],
                 _ipfsHashes[i],
                 _institution,
+                _studentWallets[i],
                 msg.sender
             );
 
-            emit CertificateIssued(_id, _studentNames[i], _matricNumbers[i], _degrees[i], _ipfsHashes[i], _institution, msg.sender);
+            emit CertificateIssued(_id, _studentNames[i], _matricNumbers[i], _degrees[i], _ipfsHashes[i], _institution, _studentWallets[i], msg.sender);
 
             unchecked {
                 ++i;
@@ -113,7 +149,8 @@ contract Certificate is AccessControl {
             string memory matricNumber,
             string memory degree,
             string memory ipfsHash,
-            string memory institution, // ✅ Return school name
+            string memory institution,
+            address studentWallet,
             address issuer
         )
     {
@@ -127,8 +164,19 @@ contract Certificate is AccessControl {
             cert.matricNumber,
             cert.degree,
             cert.ipfsHash,
-            cert.institution, // ✅ Return school name
+            cert.institution,
+            cert.studentWallet,
             cert.issuer
         );
+    }
+
+    // Required overrides for Solidity multiple inheritance resolution
+    function supportsInterface(bytes4 interfaceId)
+        public
+        view
+        override(ERC721, AccessControl)
+        returns (bool)
+    {
+        return super.supportsInterface(interfaceId);
     }
 }

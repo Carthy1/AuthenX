@@ -14,7 +14,7 @@ function Home() {
 
           <p>
             AuthenX is a next-generation academic credential verification platform
-            designed to eliminate fraud and build trust in digital systems using blockchain.
+            designed to eliminate fraud and build trust in digital systems using secure distributed ledgers.
             It empowers institutions, employers, and individuals to verify certificates instantly
             with absolute cryptographical confidence.
           </p>
@@ -45,10 +45,10 @@ function Home() {
           </div>
 
           <div className="feature-card">
-            <img src="/feature-blockchain.png" alt="Blockchain Storage" className="feature-img" />
+            <img src="/feature-blockchain.png" alt="Cryptographic Integrity" className="feature-img" />
             <h3>2. Cryptographic Proof</h3>
             <p>
-              Blockchain technology ensures that every certificate is securely recorded
+              Tamper-proof ledger technology ensures that every certificate is securely recorded
               and mathematically proven to be untampered and globally unique.
             </p>
           </div>
@@ -59,14 +59,14 @@ function Home() {
         <h2>A Platform Built for <span className="gradient-text">Integrity</span></h2>
         <p style={{ maxWidth: "700px", margin: "0 auto", color: "var(--text-muted)", fontSize: "18px" }}>
           AuthenX ensures trust, transparency, and military-grade security in academic
-          verification systems worldwide leveraging Web3 technologies.
+          verification systems worldwide leveraging secure distributed technologies.
         </p>
 
         <div className="features-expanded" style={{ marginTop: "40px" }}>
           <div className="feature-card">
             <h3>Secure Data Handling</h3>
             <p>
-              All user and certificate data are encrypted and securely stored using zero-knowledge architectures,
+              All user and certificate data are encrypted and securely stored using secure encryption architectures,
               preventing unauthorized access or systemic data breaches.
             </p>
           </div>
@@ -75,7 +75,7 @@ function Home() {
             <h3>Trusted Institutions</h3>
             <p>
               Only verified and audited institutions are allowed to issue certificates,
-              ensuring that every single record minted on the platform is perfectly credible.
+              ensuring that every single record registered on the platform is perfectly credible.
             </p>
           </div>
 

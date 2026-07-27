@@ -27,6 +27,7 @@ const UploadPage = ({ user }) => {
   const [studentName, setStudentName] = useState("");
   const [matricNumber, setMatricNumber] = useState("");
   const [degree, setDegree] = useState("");
+  const [studentWallet, setStudentWallet] = useState("");
   const [file, setFile] = useState(null); 
 
   // Batch Issue State
@@ -43,7 +44,7 @@ const UploadPage = ({ user }) => {
     if (!isAuthorized) { setStatus("Permission Denied."); return; }
     if (!file) { setStatus("Select a file!"); return; }
 
-    setStatus("Uploading to IPFS...");
+    setStatus("Storing certificate securely...");
     try {
       window.isAuthenxProcessOngoing = true;
       const formData = new FormData();
@@ -62,11 +63,12 @@ const UploadPage = ({ user }) => {
         throw new Error("IPFS Upload Failed: Missing or Invalid Pinata API Keys.");
       }
 
-      setStatus(`Finalizing on Blockchain...`);
+      const targetWallet = studentWallet.trim() || "0x0000000000000000000000000000000000000000";
+      setStatus(`Registering on secure ledger...`);
       const contract = await getContract();
-      const tx = await contract.issueCertificate(certId, studentName, matricNumber, degree, ipfsHash, user.institution);
+      const tx = await contract.issueCertificate(certId, studentName, matricNumber, degree, ipfsHash, user.institution, targetWallet);
       
-      setStatus("Awaiting wallet confirmation...");
+      setStatus("Awaiting verification confirmation...");
       await tx.wait();
 
       await addDoc(collection(db, "issued_certificates"), {
@@ -76,12 +78,13 @@ const UploadPage = ({ user }) => {
         degree,
         institution: user.institution, 
         ipfsHash, 
+        studentWallet: targetWallet,
         issuedBy: user.fullName, 
         timestamp: serverTimestamp()
       });
 
       setStatus("Success: Record issued.");
-      setCertId(""); setStudentName(""); setMatricNumber(""); setDegree(""); setFile(null);
+      setCertId(""); setStudentName(""); setMatricNumber(""); setDegree(""); setStudentWallet(""); setFile(null);
     } catch (error) { 
       console.error(error);
       setStatus(`Failed: ${error.message || "Transaction explicitly reverted by Node"}`); 
@@ -114,7 +117,7 @@ const UploadPage = ({ user }) => {
     const results = [];
     for (let i = 0; i < rows.length; i += concurrencyLimit) {
       const chunk = rows.slice(i, i + concurrencyLimit);
-      setBatchProgress(`Uploading certificates ${i + 1} to ${Math.min(i + concurrencyLimit, rows.length)} of ${rows.length} to IPFS...`);
+      setBatchProgress(`Storing certificates securely ${i + 1} to ${Math.min(i + concurrencyLimit, rows.length)} of ${rows.length}...`);
       
       const chunkPromises = chunk.map(async (row) => {
         const formData = new FormData();
@@ -128,7 +131,7 @@ const UploadPage = ({ user }) => {
           body: formData,
         });
         if (!res.ok) {
-          throw new Error(`IPFS Upload failed for ${row.matchedFile.name}`);
+          throw new Error(`Secure storage upload failed for ${row.matchedFile.name}`);
         }
         const resData = await res.json();
         return { ...row, ipfsHash: resData.IpfsHash };
@@ -158,6 +161,7 @@ const UploadPage = ({ user }) => {
         const mNum = row.Matriculation || row.matriculation;
         const deg = row.Degree || row.degree;
         const imgName = row.ImageFileName || row.imageFileName;
+        const sWallet = row.StudentWallet || row.studentWallet || "0x0000000000000000000000000000000000000000";
 
         if (!cId || !sName || !mNum || !deg || !imgName) {
           console.warn(`Skipping Row ${i + 1}: Missing fields.`);
@@ -172,7 +176,7 @@ const UploadPage = ({ user }) => {
           return;
         }
 
-        validRows.push({ ...row, matchedFile, cId, sName, mNum, deg });
+        validRows.push({ ...row, matchedFile, cId, sName, mNum, deg, sWallet });
       }
 
       if (validRows.length === 0) {
@@ -192,15 +196,16 @@ const UploadPage = ({ user }) => {
       const matricNumbers = ipfsHashes.map(r => r.mNum);
       const degrees = ipfsHashes.map(r => r.deg);
       const hashes = ipfsHashes.map(r => r.ipfsHash);
+      const wallets = ipfsHashes.map(r => r.sWallet);
 
-      setBatchProgress(`Minting batch of ${ipfsHashes.length} record(s) on blockchain... Please approve transaction.`);
-      const tx = await contract.issueCertificatesBatch(ids, studentNames, matricNumbers, degrees, hashes, user.institution);
+      setBatchProgress(`Registering batch of ${ipfsHashes.length} certificate(s)... Please authorize.`);
+      const tx = await contract.issueCertificatesBatch(ids, studentNames, matricNumbers, degrees, hashes, user.institution, wallets);
       
-      setBatchProgress("Awaiting transaction confirmation on ledger...");
+      setBatchProgress("Finalizing registration on secure registry...");
       await tx.wait();
 
       // 3. Batch Firestore Writing
-      setBatchProgress("Synchronizing records with Cloud Archive...");
+      setBatchProgress("Saving to cloud directory...");
       const CHUNK_SIZE = 500;
       const chunks = [];
       for (let i = 0; i < ipfsHashes.length; i += CHUNK_SIZE) {
@@ -218,6 +223,7 @@ const UploadPage = ({ user }) => {
             degree: row.deg,
             institution: user.institution,
             ipfsHash: row.ipfsHash,
+            studentWallet: row.sWallet,
             issuedBy: user.fullName,
             timestamp: serverTimestamp()
           });
@@ -243,20 +249,20 @@ const UploadPage = ({ user }) => {
   return (
     <div>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "25px" }}>
-        <h2 style={{ display: "flex", alignItems: "center", gap: "10px", margin: 0 }}><Database color="var(--primary)" size={28} /> Mint Records</h2>
+        <h2 style={{ display: "flex", alignItems: "center", gap: "10px", margin: 0 }}><Database color="var(--primary)" size={28} /> Issue Certificates</h2>
         
         <div style={{ display: "flex", background: "rgba(255, 255, 255, 0.05)", borderRadius: "14px", padding: "4px", border: "1px solid var(--card-border)" }}>
            <button 
              onClick={() => setActiveTab("single")} 
              style={{ padding: "10px 20px", border: "none", borderRadius: "10px", background: activeTab === "single" ? "var(--primary)" : "transparent", color: activeTab === "single" ? "white" : "var(--text-muted)", fontWeight: "600", cursor: "pointer", transition: "all 0.3s" }}
            >
-             Single Mint
+             Single Issue
            </button>
            <button 
              onClick={() => setActiveTab("batch")} 
              style={{ padding: "10px 20px", border: "none", borderRadius: "10px", background: activeTab === "batch" ? "var(--primary)" : "transparent", color: activeTab === "batch" ? "white" : "var(--text-muted)", fontWeight: "600", cursor: "pointer", transition: "all 0.3s" }}
            >
-             Batch Pipeline
+             Batch Issue
            </button>
         </div>
       </div>
@@ -264,7 +270,7 @@ const UploadPage = ({ user }) => {
       <div className="section-card" style={{ padding: "35px" }}>
         {!isAuthorized && (
           <div style={{ background: "rgba(231, 76, 60, 0.1)", border: "1px solid rgba(231, 76, 60, 0.4)", color: "#e74c3c", padding: "15px", borderRadius: "12px", marginBottom: "25px", display: "flex", alignItems: "center", gap: "10px", fontWeight: "bold" }}>
-             <ShieldAlert size={20} /> Access Denied: Only users with 'Registrar' clearance can mint records. Your clearance: {user.role || 'none'}
+             <ShieldAlert size={20} /> Access Denied: Only users with 'Registrar' role can issue certificates. Your role: {user.role || 'none'}
           </div>
         )}
         
@@ -288,30 +294,34 @@ const UploadPage = ({ user }) => {
               
               <div style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
                 <div>
-                  <label style={{ fontSize: "13px", color: "var(--text-muted)", fontWeight: "600", marginBottom: "8px", display: "block" }}>Cryptographic Cert ID</label>
+                  <label style={{ fontSize: "13px", color: "var(--text-muted)", fontWeight: "600", marginBottom: "8px", display: "block" }}>Certificate ID</label>
                   <input placeholder="e.g. AUTH-2026-X89C" value={certId} onChange={(e) => setCertId(e.target.value)} required disabled={!isAuthorized} className="search-input" style={{ width: "100%" }} />
                 </div>
                 <div>
-                  <label style={{ fontSize: "13px", color: "var(--text-muted)", fontWeight: "600", marginBottom: "8px", display: "block" }}>Student / Subject Name</label>
+                  <label style={{ fontSize: "13px", color: "var(--text-muted)", fontWeight: "600", marginBottom: "8px", display: "block" }}>Student Name</label>
                   <input placeholder="Full Legal Name" value={studentName} onChange={(e) => setStudentName(e.target.value)} required disabled={!isAuthorized} className="search-input" style={{ width: "100%" }} />
                 </div>
                 <div>
-                  <label style={{ fontSize: "13px", color: "var(--text-muted)", fontWeight: "600", marginBottom: "8px", display: "block" }}>Matriculation / Registry Number</label>
+                  <label style={{ fontSize: "13px", color: "var(--text-muted)", fontWeight: "600", marginBottom: "8px", display: "block" }}>Registration / Matric Number</label>
                   <input placeholder="Identifier" value={matricNumber} onChange={(e) => setMatricNumber(e.target.value)} required disabled={!isAuthorized} className="search-input" style={{ width: "100%" }} />
                 </div>
                 <div>
-                  <label style={{ fontSize: "13px", color: "var(--text-muted)", fontWeight: "600", marginBottom: "8px", display: "block" }}>Degree / Qualification Achieved</label>
+                  <label style={{ fontSize: "13px", color: "var(--text-muted)", fontWeight: "600", marginBottom: "8px", display: "block" }}>Degree / Qualification</label>
                   <input placeholder="e.g. B.Sc. Computer Science" value={degree} onChange={(e) => setDegree(e.target.value)} required disabled={!isAuthorized} className="search-input" style={{ width: "100%" }} />
+                </div>
+                <div>
+                  <label style={{ fontSize: "13px", color: "var(--text-muted)", fontWeight: "600", marginBottom: "8px", display: "block" }}>Student Wallet Address (Optional)</label>
+                  <input placeholder="e.g. 0x71C... or leave blank" value={studentWallet} onChange={(e) => setStudentWallet(e.target.value)} disabled={!isAuthorized} className="search-input" style={{ width: "100%" }} />
                 </div>
               </div>
 
               <div style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
-                 <label style={{ fontSize: "13px", color: "var(--text-muted)", fontWeight: "600", display: "block" }}>Upload Digital Artifact</label>
+                 <label style={{ fontSize: "13px", color: "var(--text-muted)", fontWeight: "600", display: "block" }}>Upload Certificate File</label>
                  
                  <div style={{ border: "2px dashed var(--primary)", borderRadius: "16px", padding: "40px 20px", textAlign: "center", background: "rgba(139, 92, 246, 0.05)", flex: 1, display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", transition: "all 0.3s" }}>
                     <Database size={40} color="var(--primary)" style={{ marginBottom: "15px" }} />
                     <p style={{ margin: "0 0 10px 0", fontWeight: "600" }}>Upload Certificate Image (PDF/PNG)</p>
-                    <p style={{ margin: "0 0 20px 0", fontSize: "12px", color: "var(--text-muted)" }}>This artifact will be pinned immutably to IPFS upon minting.</p>
+                    <p style={{ margin: "0 0 20px 0", fontSize: "12px", color: "var(--text-muted)" }}>This file will be securely stored online when issued.</p>
                     
                     <label style={{ background: "var(--primary)", color: "white", padding: "10px 20px", borderRadius: "10px", cursor: "pointer", fontWeight: "600", display: "inline-block" }}>
                        Select File
@@ -319,9 +329,9 @@ const UploadPage = ({ user }) => {
                     </label>
                     {file && <p style={{ marginTop: "15px", color: "var(--success)", fontWeight: "bold", fontSize: "14px" }}>Selected: {file.name}</p>}
                  </div>
-
+ 
                  <button type="submit" className="main-btn" disabled={!isAuthorized} style={{ width: "100%", padding: "18px", fontSize: "16px" }}>
-                   Initiate Blockchain Mint
+                   Issue Certificate
                  </button>
               </div>
 
@@ -331,31 +341,31 @@ const UploadPage = ({ user }) => {
               <div style={{ background: "rgba(139, 92, 246, 0.1)", padding: "20px", borderRadius: "12px", border: "1px solid var(--primary)", display: "flex", gap: "15px" }}>
                 <Activity size={24} color="var(--primary)" />
                 <div>
-                  <h4 style={{ margin: "0 0 5px 0", color: "var(--primary)", fontSize: "16px" }}>Batch Upload Pipeline</h4>
+                  <h4 style={{ margin: "0 0 5px 0", color: "var(--primary)", fontSize: "16px" }}>Batch Certificate Upload</h4>
                   <p style={{ margin: 0, fontSize: "14px", color: "var(--text-muted)", lineHeight: "1.6" }}>
-                    1. Upload a correctly formatted CSV: <strong>CertID, StudentName, Matriculation, Degree, ImageFileName</strong>.<br/>
-                    2. Upload all corresponding image artifacts simultaneously.<br/>
-                    3. Ensure your Web3 wallet is connected and adequately funded for gas.
+                    1. Upload a correctly formatted CSV: <strong>CertID, StudentName, Matriculation, Degree, ImageFileName, StudentWallet (optional)</strong>.<br/>
+                    2. Upload all corresponding certificate files simultaneously.<br/>
+                    3. Ensure your digital signature account is authorized.
                   </p>
                 </div>
               </div>
 
               <div className="grid-1-1">
                  <div style={{ border: "1px solid var(--card-border)", borderRadius: "12px", padding: "25px", background: "var(--card-bg)" }}>
-                    <label style={{ fontSize: "14px", color: "var(--text-main)", fontWeight: "600", display: "block", marginBottom: "15px" }}>1. Data Context (CSV)</label>
+                    <label style={{ fontSize: "14px", color: "var(--text-main)", fontWeight: "600", display: "block", marginBottom: "15px" }}>1. Certificate Details (CSV File)</label>
                     <input type="file" accept=".csv" onChange={parseCSV} disabled={!isAuthorized} className="search-input" style={{ width: "100%", cursor: "pointer" }} />
                     {csvFile && <p style={{ color: "var(--success)", margin: "10px 0 0 0", fontSize: "13px", fontWeight: "bold" }}>Loaded: {csvFile.name} ({parsedData.length} schema rows)</p>}
                  </div>
 
                  <div style={{ border: "1px solid var(--card-border)", borderRadius: "12px", padding: "25px", background: "var(--card-bg)" }}>
-                    <label style={{ fontSize: "14px", color: "var(--text-main)", fontWeight: "600", display: "block", marginBottom: "15px" }}>2. Image Artifacts</label>
+                    <label style={{ fontSize: "14px", color: "var(--text-main)", fontWeight: "600", display: "block", marginBottom: "15px" }}>2. Certificate Files (PDF/PNG)</label>
                     <input type="file" multiple accept="image/*,.pdf" onChange={handleBatchImages} disabled={!isAuthorized} className="search-input" style={{ width: "100%", cursor: "pointer" }} />
                     {batchImages.length > 0 && <p style={{ color: "var(--success)", margin: "10px 0 0 0", fontSize: "13px", fontWeight: "bold" }}>Queued {batchImages.length} artifact(s).</p>}
                  </div>
               </div>
 
               <button onClick={issueBatchToBlockchain} className="main-btn" disabled={!isAuthorized || parsedData.length === 0 || batchImages.length === 0} style={{ width: "100%", padding: "18px", fontSize: "16px", alignSelf: "center", background: (isAuthorized && parsedData.length > 0 && batchImages.length > 0) ? "linear-gradient(135deg, var(--primary), var(--secondary))" : "#bdc3c7" }}>
-                Execute Pipeline Protocol
+                Upload & Issue Batch
               </button>
             </div>
           )}
