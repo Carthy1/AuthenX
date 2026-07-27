@@ -34,8 +34,7 @@ function Verify() {
         degree: result[2],
         hash: result[3],
         institution: result[4],
-        studentWallet: result[5],
-        issuer: result[6]
+        issuer: result[5]
       });
       
       setStatus("Verified (Cryptographically Secure)");
@@ -56,7 +55,6 @@ function Verify() {
             degree: docData.degree || "Archived Degree",
             hash: docData.ipfsHash,
             institution: docData.institution,
-            studentWallet: docData.studentWallet || "0x0000000000000000000000000000000000000000",
             issuer: docData.issuedBy
           });
           setStatus("Verified via Archive Database");
@@ -81,8 +79,6 @@ function Verify() {
       setLoading(false);
     }
   };
-
-  const hasValidWallet = certData && certData.studentWallet && certData.studentWallet !== "0x0000000000000000000000000000000000000000";
 
   return (
     <div className="verify-container">
@@ -137,15 +133,10 @@ function Verify() {
 
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid var(--card-border)", paddingBottom: "15px", marginBottom: "20px", flexWrap: "wrap", gap: "10px" }}>
             <h2 style={{ margin: 0, fontWeight: "800", fontSize: "1.4rem" }}>Verified Credential</h2>
-            <div style={{ borderRadius: "30px", padding: "2px", display: "flex", gap: "8px", flexWrap: "wrap" }}>
+            <div style={{ borderRadius: "30px", padding: "2px" }}>
               <span style={{ backgroundColor: status.includes("Archive") ? "rgba(217, 119, 6, 0.12)" : "rgba(5, 150, 105, 0.12)", color: status.includes("Archive") ? "var(--accent)" : "var(--success)", padding: "6px 12px", borderRadius: "30px", fontWeight: "700", fontSize: "0.85rem", display: "inline-flex", alignItems: "center", border: status.includes("Archive") ? "1px solid rgba(217, 119, 6, 0.25)" : "1px solid rgba(5, 150, 105, 0.25)" }}>
                 {status.includes("Archive") ? "Archived Database Record" : "Cryptographically Verified"}
               </span>
-              {hasValidWallet && (
-                <span style={{ backgroundColor: "rgba(37, 99, 235, 0.12)", color: "var(--primary)", padding: "6px 12px", borderRadius: "30px", fontWeight: "700", fontSize: "0.85rem", display: "inline-flex", alignItems: "center", border: "1px solid rgba(37, 99, 235, 0.25)" }}>
-                  SBT Wallet Owned
-                </span>
-              )}
             </div>
           </div>
 
@@ -166,12 +157,6 @@ function Verify() {
               <p className="certificate-label">Degree / Qualification</p>
               <p style={{ fontSize: "1.3rem", fontWeight: "800", margin: 0, color: "var(--text-main)" }}>{certData.degree}</p>
             </div>
-            {hasValidWallet && (
-              <div style={{ gridColumn: "1 / -1" }}>
-                <p className="certificate-label">Student Wallet Address (SBT Owner)</p>
-                <p style={{ fontSize: "0.95rem", fontWeight: "600", margin: 0, color: "#2ecc71", fontFamily: "monospace", wordBreak: "break-all" }}>{certData.studentWallet}</p>
-              </div>
-            )}
           </div>
 
           <div className="certificate-audit-box">
@@ -190,14 +175,6 @@ function Verify() {
                   <strong style={{ color: "var(--text-main)" }}>University Approval:</strong> Verified university permission to issue certificates.
                 </div>
               </div>
-              {hasValidWallet && (
-                <div style={{ display: "flex", alignItems: "flex-start", gap: "8px", fontSize: "0.85rem" }}>
-                  <span style={{ color: "var(--success)", fontWeight: "bold", fontSize: "1rem", lineHeight: "1" }}>✓</span>
-                  <div>
-                    <strong style={{ color: "var(--text-main)" }}>Student Ownership:</strong> Confirmed student wallet owns the SBT credential.
-                  </div>
-                </div>
-              )}
               <div style={{ display: "flex", alignItems: "flex-start", gap: "8px", fontSize: "0.85rem" }}>
                 <span style={{ color: "var(--success)", fontWeight: "bold", fontSize: "1rem", lineHeight: "1" }}>✓</span>
                 <div>

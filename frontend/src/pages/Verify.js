@@ -20,7 +20,7 @@ function Verify() {
     }
 
     setLoading(true);
-    setStatus("Querying the decentralized ledger...");
+    setStatus("Verifying on blockchain...");
     setCertData(null); 
 
     try {
@@ -33,14 +33,15 @@ function Verify() {
         matric: result[1],
         degree: result[2],
         hash: result[3],
-        institution: result[4], 
-        issuer: result[5]
+        institution: result[4],
+        studentWallet: result[5],
+        issuer: result[6]
       });
       
-      setStatus("Cryptographically Verified");
+      setStatus("Verified (Secured on Blockchain)");
     } catch (error) {
       console.error("Blockchain verification failed:", error);
-      setStatus("Querying distributed Cloud Archive...");
+      setStatus("Searching database...");
       
       try {
         const cloudQuery = query(collection(db, "issued_certificates"), where("certId", "==", searchId));
@@ -55,9 +56,10 @@ function Verify() {
             degree: docData.degree || "Archived Degree",
             hash: docData.ipfsHash,
             institution: docData.institution,
+            studentWallet: docData.studentWallet || "0x0000000000000000000000000000000000000000",
             issuer: docData.issuedBy
           });
-          setStatus("Verified via Decentralized Cloud Archive (Node Sync Pending)");
+          setStatus("Verified via Database");
 
           // Log public verifications from the cloud anonymously 
           await addDoc(collection(db, "verification_logs"), {
@@ -69,16 +71,18 @@ function Verify() {
             result: "Authentic"
           });
         } else {
-          setStatus("Certificate not found on Ledger or Cloud Archive.");
+          setStatus("Certificate not found in blockchain or database.");
         }
       } catch (cloudErr) {
         console.error("Cloud Error:", cloudErr);
-        setStatus("Certificate not found or potentially forged.");
+        setStatus("Certificate not found.");
       }
     } finally {
       setLoading(false);
     }
   };
+
+  const hasValidWallet = certData && certData.studentWallet && certData.studentWallet !== "0x0000000000000000000000000000000000000000";
 
   return (
     <div className="verify-container">
@@ -97,9 +101,9 @@ function Verify() {
       </div>
 
       <div style={{ textAlign: "center", marginBottom: "24px" }}>
-        <h1 style={{ fontSize: "2.2rem", margin: "0 0 10px 0", letterSpacing: "-0.5px", fontWeight: "800" }} className="gradient-text">Public Verification</h1>
+        <h1 style={{ fontSize: "2.2rem", margin: "0 0 10px 0", letterSpacing: "-0.5px", fontWeight: "800" }} className="gradient-text">Verify Certificate</h1>
         <p style={{ color: "var(--text-muted)", fontSize: "1rem", maxWidth: "500px", margin: "0 auto", lineHeight: "1.5" }}>
-          Instantly verify academic credentials cryptographically on the decentralized ledger.
+          Instantly verify academic certificates on the blockchain.
         </p>
       </div>
 
@@ -133,20 +137,25 @@ function Verify() {
 
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid var(--card-border)", paddingBottom: "15px", marginBottom: "20px", flexWrap: "wrap", gap: "10px" }}>
             <h2 style={{ margin: 0, fontWeight: "800", fontSize: "1.4rem" }}>Verified Credential</h2>
-            <div style={{ borderRadius: "30px", padding: "2px" }}>
+            <div style={{ borderRadius: "30px", padding: "2px", display: "flex", gap: "8px", flexWrap: "wrap" }}>
               <span style={{ backgroundColor: status.includes("Archive") ? "rgba(217, 119, 6, 0.12)" : "rgba(5, 150, 105, 0.12)", color: status.includes("Archive") ? "var(--accent)" : "var(--success)", padding: "6px 12px", borderRadius: "30px", fontWeight: "700", fontSize: "0.85rem", display: "inline-flex", alignItems: "center", border: status.includes("Archive") ? "1px solid rgba(217, 119, 6, 0.25)" : "1px solid rgba(5, 150, 105, 0.25)" }}>
-                {status.includes("Archive") ? "Decentralized Archive" : "Authentic Ledger Record"}
+                {status.includes("Archive") ? "Stored in Database" : "Verified on Blockchain"}
               </span>
+              {hasValidWallet && (
+                <span style={{ backgroundColor: "rgba(37, 99, 235, 0.12)", color: "var(--primary)", padding: "6px 12px", borderRadius: "30px", fontWeight: "700", fontSize: "0.85rem", display: "inline-flex", alignItems: "center", border: "1px solid rgba(37, 99, 235, 0.25)" }}>
+                  SBT Wallet Owned
+                </span>
+              )}
             </div>
           </div>
 
           <div className="certificate-grid">
             <div>
-              <p className="certificate-label">Graduate Name</p>
+              <p className="certificate-label">Student Name</p>
               <p className="certificate-value">{certData.name}</p>
             </div>
             <div>
-              <p className="certificate-label">Matriculation / Reg No.</p>
+              <p className="certificate-label">Registration / Matric Number</p>
               <p className="certificate-value">{certData.matric}</p>
             </div>
             <div>
@@ -154,38 +163,52 @@ function Verify() {
               <p className="certificate-value">{certData.institution || "N/A"}</p>
             </div>
             <div style={{ gridColumn: "1 / -1" }}>
-              <p className="certificate-label">Degree / Qualification Awarded</p>
+              <p className="certificate-label">Degree / Qualification</p>
               <p style={{ fontSize: "1.3rem", fontWeight: "800", margin: 0, color: "var(--text-main)" }}>{certData.degree}</p>
             </div>
+            {hasValidWallet && (
+              <div style={{ gridColumn: "1 / -1" }}>
+                <p className="certificate-label">Student Wallet Address (SBT Owner)</p>
+                <p style={{ fontSize: "0.95rem", fontWeight: "600", margin: 0, color: "#2ecc71", fontFamily: "monospace", wordBreak: "break-all" }}>{certData.studentWallet}</p>
+              </div>
+            )}
           </div>
 
           <div className="certificate-audit-box">
-            <p style={{ fontSize: "0.8rem", margin: "0 0 12px 0", textTransform: "uppercase", letterSpacing: "1px", fontWeight: "700", color: "var(--accent)" }}>Cryptographic Integrity Audit</p>
+            <p style={{ fontSize: "0.8rem", margin: "0 0 12px 0", textTransform: "uppercase", letterSpacing: "1px", fontWeight: "700", color: "var(--accent)" }}>Verification Details</p>
             
             <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginBottom: "15px", borderBottom: "1px solid var(--card-border)", paddingBottom: "12px" }}>
               <div style={{ display: "flex", alignItems: "flex-start", gap: "8px", fontSize: "0.85rem" }}>
                 <span style={{ color: "var(--success)", fontWeight: "bold", fontSize: "1rem", lineHeight: "1" }}>✓</span>
                 <div>
-                  <strong style={{ color: "var(--text-main)" }}>Ledger Registry Validation:</strong> Proven authentic on blockchain.
+                  <strong style={{ color: "var(--text-main)" }}>Blockchain Check:</strong> Verified on blockchain.
                 </div>
               </div>
               <div style={{ display: "flex", alignItems: "flex-start", gap: "8px", fontSize: "0.85rem" }}>
                 <span style={{ color: "var(--success)", fontWeight: "bold", fontSize: "1rem", lineHeight: "1" }}>✓</span>
                 <div>
-                  <strong style={{ color: "var(--text-main)" }}>Charter Authority Check:</strong> Verified issuing wallet holds active charter credentials.
+                  <strong style={{ color: "var(--text-main)" }}>University Approval:</strong> Verified university permission to issue certificates.
                 </div>
               </div>
+              {hasValidWallet && (
+                <div style={{ display: "flex", alignItems: "flex-start", gap: "8px", fontSize: "0.85rem" }}>
+                  <span style={{ color: "var(--success)", fontWeight: "bold", fontSize: "1rem", lineHeight: "1" }}>✓</span>
+                  <div>
+                    <strong style={{ color: "var(--text-main)" }}>Student Ownership:</strong> Confirmed student wallet owns the SBT credential.
+                  </div>
+                </div>
+              )}
               <div style={{ display: "flex", alignItems: "flex-start", gap: "8px", fontSize: "0.85rem" }}>
                 <span style={{ color: "var(--success)", fontWeight: "bold", fontSize: "1rem", lineHeight: "1" }}>✓</span>
                 <div>
-                  <strong style={{ color: "var(--text-main)" }}>Document Hash Matching:</strong> Storage hash matches blockchain record (0 alterations detected).
+                  <strong style={{ color: "var(--text-main)" }}>Document Check:</strong> Certificate file has not been altered.
                 </div>
               </div>
             </div>
 
             <p className="responsive-detail-row"><strong>Certificate ID:</strong> <span>{certData.id}</span></p>
-            <p className="responsive-detail-row"><strong>Issuer Signature:</strong> <span style={{ fontFamily: "'Courier New', monospace", fontSize: "0.85rem" }}>{certData.issuer}</span></p>
-            <p className="responsive-detail-row"><strong>IPFS Secure Hash:</strong> <a href={`https://gateway.pinata.cloud/ipfs/${certData.hash}`} target="_blank" rel="noreferrer" style={{ color: "var(--primary)", textDecoration: "none", fontWeight: "600", fontSize: "0.85rem" }}>{certData.hash} ↗</a></p>
+            <p className="responsive-detail-row"><strong>Issuer Address:</strong> <span style={{ fontFamily: "'Courier New', monospace", fontSize: "0.85rem" }}>{certData.issuer}</span></p>
+            <p className="responsive-detail-row"><strong>Secure File Link:</strong> <a href={`https://gateway.pinata.cloud/ipfs/${certData.hash}`} target="_blank" rel="noreferrer" style={{ color: "var(--primary)", textDecoration: "none", fontWeight: "600", fontSize: "0.85rem" }}>{certData.hash} ↗</a></p>
           </div>
 
           <div style={{ marginTop: "24px", textAlign: "center" }}>

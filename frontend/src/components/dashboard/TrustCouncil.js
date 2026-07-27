@@ -47,7 +47,7 @@ const TrustCouncil = ({ user }) => {
   useEffect(() => { fetchTrustCouncilData(); }, []);
 
   const handleApprove = async (appId) => {
-    if (!window.confirm("Approve this institution to mint certificates?")) return;
+    if (!window.confirm("Approve this institution to issue certificates?")) return;
     try {
       await updateDoc(doc(db, "users", appId), { role: "admin", status: "active" });
       fetchTrustCouncilData();
@@ -74,7 +74,7 @@ const TrustCouncil = ({ user }) => {
   };
 
   const handleSuspend = async (appId, institution) => {
-    if (!window.confirm("CRITICAL: Immediately suspend this institution's blockchain access?")) return;
+    if (!window.confirm("CRITICAL: Immediately suspend this institution's access?")) return;
     try {
       await updateDoc(doc(db, "users", appId), { role: "suspended", status: "suspended" });
 
@@ -94,7 +94,7 @@ const TrustCouncil = ({ user }) => {
   };
 
   const handleReactivate = async (appId, institution) => {
-    if (!window.confirm("Restore this institution's blockchain access?")) return;
+    if (!window.confirm("Restore this institution's access?")) return;
     try {
       await updateDoc(doc(db, "users", appId), { role: "admin", status: "active" });
 
@@ -130,7 +130,7 @@ const TrustCouncil = ({ user }) => {
   return (
     <div>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "15px" }}>
-        <h2 style={{ display: "flex", alignItems: "center", gap: "8px", margin: 0, fontSize: "20px" }}><ShieldAlert color="#e74c3c" size={22} /> Target Governance (SuperAdmin)</h2>
+        <h2 style={{ display: "flex", alignItems: "center", gap: "8px", margin: 0, fontSize: "20px" }}><ShieldAlert color="#e74c3c" size={22} /> System Governance</h2>
         <div style={{ position: "relative", width: "260px" }}>
           <Search size={16} color="var(--text-muted)" style={{ position: "absolute", left: "12px", top: "12px" }} />
           <input 
@@ -147,17 +147,17 @@ const TrustCouncil = ({ user }) => {
       <div className="grid-3" style={{ marginBottom: "15px" }}>
         <div className="section-card metric-card" style={{ padding: "10px 14px", display: "flex", alignItems: "center", gap: "10px" }}>
           <div style={{ background: "rgba(243, 156, 18, 0.1)", padding: "8px", borderRadius: "8px", color: "var(--warning)", display: "flex", alignItems: "center" }}><Clock size={20} /></div>
-          <div><p style={{ margin: 0, fontSize: "10px", color: "var(--text-muted)", fontWeight: "600", textTransform: "uppercase" }}>GTEC Accredited (Pending Node)</p>
+          <div><p style={{ margin: 0, fontSize: "10px", color: "var(--text-muted)", fontWeight: "600", textTransform: "uppercase" }}>Accredited (Awaiting Approval)</p>
           <h3 style={{ margin: "2px 0 0 0", fontSize: "20px" }}>{pendingApps.length}</h3></div>
         </div>
         <div className="section-card metric-card" style={{ padding: "10px 14px", display: "flex", alignItems: "center", gap: "10px" }}>
           <div style={{ background: "rgba(46, 204, 113, 0.1)", padding: "8px", borderRadius: "8px", color: "var(--success)", display: "flex", alignItems: "center" }}><ShieldCheck size={20} /></div>
-          <div><p style={{ margin: 0, fontSize: "10px", color: "var(--text-muted)", fontWeight: "600", textTransform: "uppercase" }}>Active Blockchain Nodes</p>
+          <div><p style={{ margin: 0, fontSize: "10px", color: "var(--text-muted)", fontWeight: "600", textTransform: "uppercase" }}>Active Universities</p>
           <h3 style={{ margin: "2px 0 0 0", fontSize: "20px" }}>{activeApps.length}</h3></div>
         </div>
         <div className="section-card metric-card" style={{ padding: "10px 14px", display: "flex", alignItems: "center", gap: "10px" }}>
           <div style={{ background: "rgba(231, 76, 60, 0.1)", padding: "8px", borderRadius: "8px", color: "var(--danger, #e74c3c)", display: "flex", alignItems: "center" }}><XCircle size={20} /></div>
-          <div><p style={{ margin: 0, fontSize: "10px", color: "var(--text-muted)", fontWeight: "600", textTransform: "uppercase" }}>Suspended Ops</p>
+          <div><p style={{ margin: 0, fontSize: "10px", color: "var(--text-muted)", fontWeight: "600", textTransform: "uppercase" }}>Suspended Universities</p>
           <h3 style={{ margin: "2px 0 0 0", fontSize: "20px" }}>{suspendedApps.length}</h3></div>
         </div>
       </div>
@@ -166,13 +166,13 @@ const TrustCouncil = ({ user }) => {
         {/* Modern Tabs */}
         <div style={{ display: "flex", borderBottom: "1px solid var(--card-border)", background: "rgba(255, 255, 255, 0.02)" }}>
            <button className={`tab-btn ${activeTab === "pending" ? "active" : ""}`} onClick={() => setActiveTab("pending")}>
-             Pending Activations {pendingApps.length > 0 && <span className="tab-badge warning">{pendingApps.length}</span>}
+             Pending Approvals {pendingApps.length > 0 && <span className="tab-badge warning">{pendingApps.length}</span>}
            </button>
            <button className={`tab-btn ${activeTab === "active" ? "active" : ""}`} onClick={() => setActiveTab("active")}>
              Active Universities
            </button>
            <button className={`tab-btn ${activeTab === "suspended" ? "active" : ""}`} onClick={() => setActiveTab("suspended")}>
-             Suspended Terminals {suspendedApps.length > 0 && <span className="tab-badge danger">{suspendedApps.length}</span>}
+             Suspended Universities {suspendedApps.length > 0 && <span className="tab-badge danger">{suspendedApps.length}</span>}
            </button>
         </div>
 
@@ -180,11 +180,11 @@ const TrustCouncil = ({ user }) => {
           <table className="data-table modern-hover-table" style={{ margin: 0 }}>
             <thead>
               <tr>
-                <th>Network Node</th>
-                <th>Administrator Vector</th>
+                <th>University</th>
+                <th>Contact Person</th>
                 <th>Registration ID</th>
-                <th>Evidence Artifacts</th>
-                <th style={{ textAlign: "right" }}>Governance Action</th>
+                <th>Accreditation Proof</th>
+                <th style={{ textAlign: "right" }}>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -213,19 +213,19 @@ const TrustCouncil = ({ user }) => {
                   <td style={{ textAlign: "right", display: "flex", justifyContent: "flex-end", gap: "10px" }}>
                     {activeTab === "pending" && (
                       <>
-                        <button onClick={() => handleApprove(app.id)} className="icon-btn btn-success" title="Approve & Activate Blockchain"><CheckCircle size={18} /></button>
+                        <button onClick={() => handleApprove(app.id)} className="icon-btn btn-success" title="Approve & Activate"><CheckCircle size={18} /></button>
                         <button onClick={() => handleReject(app.id)} className="icon-btn btn-danger" title="Reject Instantly"><XCircle size={18} /></button>
                       </>
                     )}
                     {activeTab === "active" && (
                       <>
-                        <button onClick={() => handleResetPassword(app.email)} className="icon-btn btn-warning" title="Reset Operator Keys"><Key size={18} /></button>
-                        <button onClick={() => handleSuspend(app.id, app.institution)} className="icon-btn btn-danger" title="Force Suspension"><ShieldAlert size={18} /></button>
+                        <button onClick={() => handleResetPassword(app.email)} className="icon-btn btn-warning" title="Reset Password"><Key size={18} /></button>
+                        <button onClick={() => handleSuspend(app.id, app.institution)} className="icon-btn btn-danger" title="Suspend"><ShieldAlert size={18} /></button>
                       </>
                     )}
                     {activeTab === "suspended" && (
                       <>
-                        <button onClick={() => handleReactivate(app.id, app.institution)} className="icon-btn btn-success" title="Restore Clearance"><CheckCircle size={18} /></button>
+                        <button onClick={() => handleReactivate(app.id, app.institution)} className="icon-btn btn-success" title="Reactivate Account"><CheckCircle size={18} /></button>
                       </>
                     )}
                   </td>

@@ -71,36 +71,36 @@ const CreateUser = ({ user }) => {
   return (
     <div>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "15px" }}>
-        <h2 style={{ display: "flex", alignItems: "center", gap: "8px", margin: 0, fontSize: "20px" }}><ShieldAlert color="var(--primary)" size={24} /> {user.institution} Team Roster</h2>
+        <h2 style={{ display: "flex", alignItems: "center", gap: "8px", margin: 0, fontSize: "20px" }}><ShieldAlert color="var(--primary)" size={24} /> {user.institution} Staff Management</h2>
       </div>
 
       <div className="grid-1-2">
         
         {/* Registration Form */}
         <div className="section-card" style={{ alignSelf: "start", padding: "16px" }}>
-          <h4 style={{ margin: "0 0 15px 0", fontSize: "14px", display: "flex", alignItems: "center", gap: "8px" }}><Key size={16} color="var(--accent)" /> Provision Operator</h4>
+          <h4 style={{ margin: "0 0 15px 0", fontSize: "14px", display: "flex", alignItems: "center", gap: "8px" }}><Key size={16} color="var(--accent)" /> Register New Staff</h4>
           
           <form onSubmit={handleCreateStaff} className="user-form" style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
             <div>
               <label style={{ fontSize: "11px", color: "var(--text-muted)", fontWeight: "600", marginBottom: "3px", display: "block" }}>Full Name</label>
-              <input placeholder="Operator Name" value={staffName} onChange={(e) => setStaffName(e.target.value)} required style={{ padding: "10px 12px" }} />
+              <input placeholder="Staff Name" value={staffName} onChange={(e) => setStaffName(e.target.value)} required style={{ padding: "10px 12px" }} />
             </div>
             <div>
-              <label style={{ fontSize: "11px", color: "var(--text-muted)", fontWeight: "600", marginBottom: "3px", display: "block" }}>Secured Email</label>
+              <label style={{ fontSize: "11px", color: "var(--text-muted)", fontWeight: "600", marginBottom: "3px", display: "block" }}>Email Address</label>
               <input type="email" placeholder="email@institution.edu" value={staffEmail} onChange={(e) => setStaffEmail(e.target.value)} required style={{ padding: "10px 12px" }} />
             </div>
             <div>
-              <label style={{ fontSize: "11px", color: "var(--text-muted)", fontWeight: "600", marginBottom: "3px", display: "block" }}>Initial Access Key (Password)</label>
+              <label style={{ fontSize: "11px", color: "var(--text-muted)", fontWeight: "600", marginBottom: "3px", display: "block" }}>Password</label>
               <input type="password" placeholder="Passphrase" value={staffPassword} onChange={(e) => setStaffPassword(e.target.value)} required style={{ padding: "10px 12px" }} />
             </div>
             <div>
-              <label style={{ fontSize: "11px", color: "var(--text-muted)", fontWeight: "600", marginBottom: "3px", display: "block" }}>Clearance Level</label>
+              <label style={{ fontSize: "11px", color: "var(--text-muted)", fontWeight: "600", marginBottom: "3px", display: "block" }}>Role</label>
               <select value={staffRole} onChange={(e) => setStaffRole(e.target.value)} style={{ padding: "10px 12px" }}>
                 <option value="staff">Staff (Verify Only)</option>
-                <option value="registrar">Registrar (Mint & Verify)</option>
+                <option value="registrar">Registrar (Issue & Verify)</option>
               </select>
             </div>
-            <button type="submit" className="main-btn" style={{ marginTop: "5px", width: "100%", padding: "10px" }}>Cryptographic Provision</button>
+            <button type="submit" className="main-btn" style={{ marginTop: "5px", width: "100%", padding: "10px" }}>Register Staff</button>
           </form>
           {status && <div style={{ marginTop: "10px", padding: "8px", borderRadius: "8px", background: status.includes("successfully") ? "rgba(46, 204, 113, 0.1)" : status.includes("Registering") ? "rgba(243, 156, 18, 0.1)" : "rgba(231, 76, 60, 0.1)", color: status.includes("successfully") ? "#2ecc71" : status.includes("Registering") ? "#f39c12" : "#e74c3c", fontSize: "13px", fontWeight: "600", textAlign: "center" }}>{status}</div>}
         </div>
@@ -108,17 +108,17 @@ const CreateUser = ({ user }) => {
         {/* Directory Table */}
         <div className="section-card" style={{ padding: 0, overflow: "hidden" }}>
            <div style={{ padding: "12px 16px", borderBottom: "1px solid var(--card-border)" }}>
-             <h4 style={{ margin: 0, fontSize: "14px", display: "flex", alignItems: "center", gap: "8px" }}><Database size={16} color="var(--primary)" /> Authorized Directory</h4>
+              <h4 style={{ margin: 0, fontSize: "14px", display: "flex", alignItems: "center", gap: "8px" }}><Database size={16} color="var(--primary)" /> Staff List</h4>
            </div>
            
            <div style={{ padding: "12px 16px", overflowX: "auto" }}>
              <table className="data-table modern-hover-table" style={{ margin: 0 }}>
                <thead>
-                 <tr>
-                   <th>Identity Vector</th>
-                   <th>Access Level</th>
-                   <th style={{textAlign: "right"}}>Status</th>
-                 </tr>
+                  <tr>
+                    <th>Staff Name / Email</th>
+                    <th>Role</th>
+                    <th style={{textAlign: "right"}}>Status</th>
+                  </tr>
                </thead>
                <tbody>
                  {staffList.map(m => (
@@ -164,7 +164,7 @@ const CreateUser = ({ user }) => {
                  {staffList.length === 0 && (
                    <tr>
                      <td colSpan="3" style={{ textAlign: "center", padding: "30px", color: "var(--text-muted)" }}>
-                        No operators provisioned yet.
+                         No staff registered yet.
                      </td>
                    </tr>
                  )}

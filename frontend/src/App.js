@@ -8,7 +8,7 @@ import Modal from "./components/Modal";
 import Home from "./pages/Home";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
-import Verify from "./pages/VerifyNew";
+import Verify from "./pages/Verify";
 import ProtectedRoute from "./components/ProtectedRoute"; 
 import { Toaster } from "react-hot-toast";
 

@@ -157,7 +157,7 @@ const DashboardHome = ({ user, isSuperAdmin }) => {
   return (
     <>
       <div style={{ marginBottom: "15px" }}>
-        <h2 style={{ fontSize: "22px", margin: 0 }}>{isSuperAdmin ? "AuthenX Global Command" : `${getGreeting()}, ${user.fullName}`}</h2>
+        <h2 style={{ fontSize: "22px", margin: 0 }}>{isSuperAdmin ? "AuthenX Global Dashboard" : `${getGreeting()}, ${user.fullName}`}</h2>
         <p style={{ color: "var(--text-muted)", margin: "4px 0 0 0", fontSize: "13px" }}>{isSuperAdmin ? "Aggregating active platform metrics globally across all institutions." : `Here’s what’s happening at ${user.institution} today.`}</p>
       </div>
 
@@ -190,7 +190,7 @@ const DashboardHome = ({ user, isSuperAdmin }) => {
             <>
               <h3 style={{ margin: "4px 0 0 0", fontWeight: "800" }}>{stats.registry}</h3>
               <p style={{ margin: "2px 0 0 0", fontSize: "11px", color: "var(--text-muted)" }}>
-                Immutably anchored to ledger
+                Permanently secured on secure registry
               </p>
             </>
           )}
@@ -207,7 +207,7 @@ const DashboardHome = ({ user, isSuperAdmin }) => {
             <>
               <h3 style={{ margin: "4px 0 0 0", fontWeight: "800", color: forgeryCount > 0 ? "var(--danger)" : "var(--text-main)" }}>{forgeryCount}</h3>
               <p style={{ margin: "2px 0 0 0", fontSize: "11px", color: "var(--text-muted)" }}>
-                Flagged signature anomalies
+                Invalid certificates flagged
               </p>
             </>
           )}
@@ -221,9 +221,9 @@ const DashboardHome = ({ user, isSuperAdmin }) => {
           <div style={{ display: "flex", flexDirection: "column", gap: "2px", marginTop: "4px" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
               <span style={{ display: "inline-block", width: "6px", height: "6px", background: "var(--success)", borderRadius: "50%", boxShadow: "0 0 6px var(--success)" }}></span>
-              <span style={{ fontSize: "12px", fontWeight: "700", color: "var(--success)" }}>Nodes Synchronized</span>
+              <span style={{ fontSize: "12px", fontWeight: "700", color: "var(--success)" }}>System Online</span>
             </div>
-            <p style={{ margin: 0, fontSize: "11px", color: "var(--text-muted)" }}>Celo Sepolia Testnet</p>
+            <p style={{ margin: 0, fontSize: "11px", color: "var(--text-muted)" }}>Secure Distributed Network</p>
           </div>
         </div>
       </div>
@@ -231,7 +231,7 @@ const DashboardHome = ({ user, isSuperAdmin }) => {
       <div className="grid-2-1" style={{ marginTop: "10px" }}>
         
         <div className="chart-container" style={{ margin: 0 }}>
-          <h4 style={{ margin: "0 0 15px 0", fontSize: "14px", display: "flex", alignItems: "center", gap: "8px" }}><Activity size={16} color="var(--primary)"/> Network Activity Timeline</h4>
+          <h4 style={{ margin: "0 0 15px 0", fontSize: "14px", display: "flex", alignItems: "center", gap: "8px" }}><Activity size={16} color="var(--primary)"/> Activity Timeline</h4>
           <div style={{ width: "100%", height: "240px" }}>
             {loading ? <div className="shimmer" style={{ width: "100%", height: "100%" }}></div> : 
             <ResponsiveContainer width="100%" height="100%">
@@ -259,7 +259,7 @@ const DashboardHome = ({ user, isSuperAdmin }) => {
         </div>
 
         <div className="chart-container" style={{ margin: 0 }}>
-          <h4 style={{ margin: "0 0 15px 0", fontSize: "14px", display: "flex", alignItems: "center", gap: "8px" }}><ShieldCheck size={16} color="var(--primary)"/> Integrity Ratio</h4>
+          <h4 style={{ margin: "0 0 15px 0", fontSize: "14px", display: "flex", alignItems: "center", gap: "8px" }}><ShieldCheck size={16} color="var(--primary)"/> Verification Success Rate</h4>
           <div style={{ width: "100%", height: "240px", display: "flex", justifyContent: "center" }}>
             {loading ? <div className="shimmer" style={{ width: "150px", height: "150px", borderRadius: "50%" }}></div> : 
             <ResponsiveContainer width="100%" height="100%">
@@ -282,7 +282,7 @@ const DashboardHome = ({ user, isSuperAdmin }) => {
       <div className="grid-2-1" style={{ marginTop: "16px" }}>
         
         <div className="chart-container" style={{ margin: 0 }}>
-          <h4 style={{ margin: "0 0 15px 0", fontSize: "14px", display: "flex", alignItems: "center", gap: "8px" }}><Database size={16} color="var(--primary)"/> Top 5 Degrees Minted</h4>
+          <h4 style={{ margin: "0 0 15px 0", fontSize: "14px", display: "flex", alignItems: "center", gap: "8px" }}><Database size={16} color="var(--primary)"/> Top 5 Degrees Issued</h4>
           <div style={{ width: "100%", height: "240px" }}>
             {loading ? <div className="shimmer" style={{ width: "100%", height: "100%" }}></div> : 
             <ResponsiveContainer width="100%" height="100%">
@@ -299,17 +299,17 @@ const DashboardHome = ({ user, isSuperAdmin }) => {
         </div>
 
         <div className="chart-container" style={{ margin: 0 }}>
-          <h4 style={{ margin: "0 0 15px 0", fontSize: "14px", display: "flex", alignItems: "center", gap: "8px" }}><ShieldCheck size={16} color="var(--primary)"/> Immutable Audit Log</h4>
+          <h4 style={{ margin: "0 0 15px 0", fontSize: "14px", display: "flex", alignItems: "center", gap: "8px" }}><ShieldCheck size={16} color="var(--primary)"/> Activity Log</h4>
           <div style={{ display: "flex", flexDirection: "column", gap: "8px", height: "240px", justifyContent: "center" }}>
             <div style={{ padding: "10px 14px", background: "rgba(255,255,255,0.03)", borderRadius: "8px", borderLeft: "4px solid var(--primary)" }}>
-              <p style={{ margin: 0, fontSize: "13px", fontWeight: "700" }}>Registry Sync</p>
-              <p style={{ margin: "2px 0 0 0", fontSize: "12px", color: "var(--text-muted)" }}>Smart Contract initialized perfectly.</p>
+              <p style={{ margin: 0, fontSize: "13px", fontWeight: "700" }}>System Sync</p>
+              <p style={{ margin: "2px 0 0 0", fontSize: "12px", color: "var(--text-muted)" }}>Secure database registry connected.</p>
               <p style={{ margin: "4px 0 0 0", fontSize: "10px", color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.5px" }}>Platform Core</p>
             </div>
             <div style={{ padding: "10px 14px", background: "rgba(255,255,255,0.03)", borderRadius: "8px", borderLeft: "4px solid #8b5cf6" }}>
               <p style={{ margin: 0, fontSize: "13px", fontWeight: "700" }}>Active Session</p>
-              <p style={{ margin: "2px 0 0 0", fontSize: "12px", color: "var(--text-muted)" }}>{user.fullName} authenticated via cryptographic module.</p>
-              <p style={{ margin: "4px 0 0 0", fontSize: "10px", color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.5px" }}>Auth Node</p>
+              <p style={{ margin: "2px 0 0 0", fontSize: "12px", color: "var(--text-muted)" }}>{user.fullName} logged in successfully.</p>
+              <p style={{ margin: "4px 0 0 0", fontSize: "10px", color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.5px" }}>User Session</p>
             </div>
           </div>
         </div>

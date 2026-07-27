@@ -207,28 +207,28 @@ function Dashboard({ isMobileMenuOpen, setIsMobileMenuOpen }) {
             {user?.role === "superadmin" ? (
                <>
                  <li className={activePage === "dashboard" ? "active" : ""} onClick={() => { setActivePage("dashboard"); setIsMobileMenuOpen(false); }}>
-                   <Globe size={18} style={{ marginRight: "10px" }} /> Global Overview
+                   <Globe size={18} style={{ marginRight: "10px" }} /> Global Dashboard
                  </li>
                  <li className={activePage === "trust-council" ? "active" : ""} onClick={() => { setActivePage("trust-council"); setIsMobileMenuOpen(false); }}>
                    <ShieldAlert size={18} style={{ marginRight: "10px" }} /> Trust Council
                  </li>
                  <li className={activePage === "logs" ? "active" : ""} onClick={() => { setActivePage("logs"); setIsMobileMenuOpen(false); }}>
-                   <FileText size={18} style={{ marginRight: "10px" }} /> Global Audit Logs
+                   <FileText size={18} style={{ marginRight: "10px" }} /> Global Logs
                  </li>
                  <li className={activePage === "settings" ? "active" : ""} onClick={() => { setActivePage("settings"); setIsMobileMenuOpen(false); }}>
-                   <Settings size={18} style={{ marginRight: "10px" }} /> System Controls
+                   <Settings size={18} style={{ marginRight: "10px" }} /> System Settings
                  </li>
                  <li className={activePage === "certificate" ? "active" : ""} onClick={() => { setActivePage("certificate"); setIsMobileMenuOpen(false); }}>
-                   <ShieldCheck size={18} style={{ marginRight: "10px" }} /> Verification Portal
+                   <ShieldCheck size={18} style={{ marginRight: "10px" }} /> Verify Certificate
                  </li>
                </>
             ) : user?.role === "gtec" ? (
                <>
                  <li className={activePage === "dashboard" || activePage === "gtec-portal" ? "active" : ""} onClick={() => { setActivePage("gtec-portal"); setIsMobileMenuOpen(false); }}>
-                   <ShieldAlert size={18} style={{ marginRight: "10px" }} /> Accreditation Board
+                   <ShieldAlert size={18} style={{ marginRight: "10px" }} /> GTEC Approvals
                  </li>
                  <li className={activePage === "certificate" ? "active" : ""} onClick={() => { setActivePage("certificate"); setIsMobileMenuOpen(false); }}>
-                   <ShieldCheck size={18} style={{ marginRight: "10px" }} /> Verification Portal
+                   <ShieldCheck size={18} style={{ marginRight: "10px" }} /> Verify Certificate
                  </li>
                </>
             ) : (
@@ -236,19 +236,19 @@ function Dashboard({ isMobileMenuOpen, setIsMobileMenuOpen }) {
                  <li className={activePage === "dashboard" ? "active" : ""} onClick={() => { setActivePage("dashboard"); setIsMobileMenuOpen(false); }}>
                    <Home size={18} style={{ marginRight: "10px" }} /> Overview
                  </li>
-                 <li className={activePage === "certificate" ? "active" : ""} onClick={() => { setActivePage("certificate"); setIsMobileMenuOpen(false); }}>
-                   <ShieldCheck size={18} style={{ marginRight: "10px" }} /> Verify Credential
+                  <li className={activePage === "certificate" ? "active" : ""} onClick={() => { setActivePage("certificate"); setIsMobileMenuOpen(false); }}>
+                   <ShieldCheck size={18} style={{ marginRight: "10px" }} /> Verify Certificate
                  </li>
                  {isAdmin && (
                    <li className={activePage === "create-user" ? "active" : ""} onClick={() => { setActivePage("create-user"); setIsMobileMenuOpen(false); }}>
-                     <Users size={18} style={{ marginRight: "10px" }} /> Team Roster
+                     <Users size={18} style={{ marginRight: "10px" }} /> Staff Directory
                    </li>
                  )}
                  <li className={activePage === "upload" ? "active" : ""} onClick={() => { setActivePage("upload"); setIsMobileMenuOpen(false); }}>
-                   <UploadCloud size={18} style={{ marginRight: "10px" }} /> Issue Record
+                   <UploadCloud size={18} style={{ marginRight: "10px" }} /> Issue Certificate
                  </li>
                  <li className={activePage === "logs" ? "active" : ""} onClick={() => { setActivePage("logs"); setIsMobileMenuOpen(false); }}>
-                   <FileText size={18} style={{ marginRight: "10px" }} /> Local Audit Logs
+                   <FileText size={18} style={{ marginRight: "10px" }} /> Activity Logs
                  </li>
                  <li className={activePage === "settings" ? "active" : ""} onClick={() => { setActivePage("settings"); setIsMobileMenuOpen(false); }}>
                    <Settings size={18} style={{ marginRight: "10px" }} /> Account Settings

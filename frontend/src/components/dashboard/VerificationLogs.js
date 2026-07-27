@@ -43,7 +43,7 @@ const VerificationLogs = ({ user, isSuperAdmin }) => {
   return (
     <div>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "25px" }}>
-        <h2 style={{ display: "flex", alignItems: "center", gap: "10px", margin: 0 }}><FileText color="var(--primary)" size={28} /> {isSuperAdmin ? "Global Audit Firehose" : "Registry Activity Logs"}</h2>
+        <h2 style={{ display: "flex", alignItems: "center", gap: "10px", margin: 0 }}><FileText color="var(--primary)" size={28} /> {isSuperAdmin ? "Global Activity Logs" : "Activity Logs"}</h2>
         <div style={{ position: "relative", width: "300px" }}>
           <Search size={18} color="var(--text-muted)" style={{ position: "absolute", left: "15px", top: "14px" }} />
           <input 
@@ -62,11 +62,11 @@ const VerificationLogs = ({ user, isSuperAdmin }) => {
             <thead>
               <tr>
                 <th>Timestamp</th>
-                {isSuperAdmin && <th>Target Institution</th>}
+                {isSuperAdmin && <th>Institution</th>}
                 <th>Certificate ID</th>
-                <th>Verified Subject</th>
-                <th>Validator Node</th>
-                <th style={{ textAlign: "right" }}>Execution Result</th>
+                <th>Student Name</th>
+                <th>Verified By</th>
+                <th style={{ textAlign: "right" }}>Result</th>
               </tr>
             </thead>
             <tbody>

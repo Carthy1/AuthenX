@@ -76,7 +76,7 @@ const GtecPortal = ({ user }) => {
   return (
     <div>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "15px" }}>
-        <h2 style={{ display: "flex", alignItems: "center", gap: "8px", margin: 0, fontSize: "20px" }}><ShieldAlert color="var(--accent)" size={22} /> GTEC Accreditation Terminal</h2>
+        <h2 style={{ display: "flex", alignItems: "center", gap: "8px", margin: 0, fontSize: "20px" }}><ShieldAlert color="var(--accent)" size={22} /> GTEC Accreditation Portal</h2>
         <div style={{ position: "relative", width: "260px" }}>
           <Search size={16} color="var(--text-muted)" style={{ position: "absolute", left: "12px", top: "12px" }} />
           <input 
@@ -93,7 +93,7 @@ const GtecPortal = ({ user }) => {
       <div className="grid-3" style={{ marginBottom: "15px" }}>
         <div className="section-card metric-card" style={{ padding: "10px 14px", display: "flex", alignItems: "center", gap: "10px" }}>
           <div style={{ background: "rgba(217, 119, 6, 0.1)", padding: "8px", borderRadius: "8px", color: "var(--accent)", display: "flex", alignItems: "center" }}><Clock size={20} /></div>
-          <div><p style={{ margin: 0, fontSize: "10px", color: "var(--text-muted)", fontWeight: "600", textTransform: "uppercase" }}>Awaiting GTEC Audit</p>
+          <div><p style={{ margin: 0, fontSize: "10px", color: "var(--text-muted)", fontWeight: "600", textTransform: "uppercase" }}>Awaiting GTEC Review</p>
           <h3 style={{ margin: "2px 0 0 0", fontSize: "20px" }}>{pendingApps.length}</h3></div>
         </div>
         <div className="section-card metric-card" style={{ padding: "10px 14px", display: "flex", alignItems: "center", gap: "10px" }}>
@@ -112,10 +112,10 @@ const GtecPortal = ({ user }) => {
         {/* Modern Tabs */}
         <div style={{ display: "flex", borderBottom: "1px solid var(--card-border)", background: "rgba(255, 255, 255, 0.02)" }}>
            <button className={`tab-btn ${activeTab === "pending" ? "active" : ""}`} onClick={() => setActiveTab("pending")}>
-             Accreditation Queue {pendingApps.length > 0 && <span className="tab-badge warning">{pendingApps.length}</span>}
+             Pending Requests {pendingApps.length > 0 && <span className="tab-badge warning">{pendingApps.length}</span>}
            </button>
            <button className={`tab-btn ${activeTab === "accredited" ? "active" : ""}`} onClick={() => setActiveTab("accredited")}>
-             Accredited Institutions
+             Accredited Universities
            </button>
            <button className={`tab-btn ${activeTab === "suspended" ? "active" : ""}`} onClick={() => setActiveTab("suspended")}>
              Declined / Suspended
@@ -126,11 +126,11 @@ const GtecPortal = ({ user }) => {
           <table className="data-table modern-hover-table" style={{ margin: 0 }}>
             <thead>
               <tr>
-                <th>Institution Vector</th>
-                <th>Administrator Details</th>
-                <th>Accreditation Reg No.</th>
-                <th>Regulatory Evidence</th>
-                <th style={{ textAlign: "right" }}>GTEC Audit Action</th>
+                <th>University Name</th>
+                <th>Contact Person</th>
+                <th>Accreditation Number</th>
+                <th>Accreditation Document</th>
+                <th style={{ textAlign: "right" }}>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -151,9 +151,9 @@ const GtecPortal = ({ user }) => {
                   <td><span style={{ fontFamily: "monospace", color: "var(--text-muted)" }}>{app.registrationNumber || "N/A"}</span></td>
                   <td>
                     {app.accreditationHash ? (
-                      <a href={`https://gateway.pinata.cloud/ipfs/${app.accreditationHash}`} target="_blank" rel="noreferrer" download className="evidence-link">
-                         <Database size={14} style={{ marginRight: "6px" }}/> Review Accreditation PDF
-                      </a>
+                       <a href={`https://gateway.pinata.cloud/ipfs/${app.accreditationHash}`} target="_blank" rel="noreferrer" download className="evidence-link">
+                          <Database size={14} style={{ marginRight: "6px" }}/> View Accreditation PDF
+                       </a>
                     ) : <span style={{ color: "var(--text-muted)", fontStyle: "italic" }}>Missing Document</span>}
                   </td>
                   <td style={{ textAlign: "right", display: "flex", justifyContent: "flex-end", gap: "10px" }}>

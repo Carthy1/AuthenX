@@ -34,7 +34,7 @@ function Navbar({ toggleTheme, theme, openModal, user, setUser, isMobileMenuOpen
           </>
         ) : (
           <span style={{ fontWeight: "700", color: "var(--text-main)", fontSize: "1.1rem", letterSpacing: "0.5px" }}>
-            {user?.role === "superadmin" ? "AuthenX Global Control" : user.institution}
+            {user?.role === "superadmin" ? "AuthenX Global Dashboard" : user.institution}
           </span>
         )}
       </div>
