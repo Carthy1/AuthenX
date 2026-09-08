@@ -25,6 +25,7 @@ contract Certificate is AccessControl, ERC721 {
 
     constructor() ERC721("AuthenX Credential", "AUTHX") {
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
+        _grantRole(ISSUER_ROLE, msg.sender);
     }
 
     struct Cert {
