@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { ethers } from "ethers";
 import { getContract } from "../../blockchain";
 import { db } from "../../firebase"; 
 import { 
@@ -44,6 +45,27 @@ const UploadPage = ({ user }) => {
     if (!isAuthorized) { setStatus("Permission Denied."); return; }
     if (!file) { setStatus("Select a file!"); return; }
 
+    const trimmedWallet = studentWallet.trim();
+    if (trimmedWallet && !ethers.isAddress(trimmedWallet)) {
+      setStatus("Failed: Please enter a valid Ethereum wallet address or leave it blank.");
+      return;
+    }
+
+    const trimmedCertId = certId.trim();
+    if (!trimmedCertId) { setStatus("Please enter a Certificate ID."); return; }
+
+    setStatus("Verifying ID availability on blockchain...");
+    try {
+      const contractCheck = await getContract();
+      const existing = await contractCheck.verifyCertificate(trimmedCertId);
+      if (existing && existing[0] && existing[0].length > 0) {
+        setStatus(`Failed: Certificate ID "${trimmedCertId}" is already registered on the blockchain.`);
+        return;
+      }
+    } catch (err) {
+      // Expected: CertificateNotFound means ID is available for issuance
+    }
+
     setStatus("Storing certificate securely...");
     try {
       window.isAuthenxProcessOngoing = true;
@@ -63,7 +85,7 @@ const UploadPage = ({ user }) => {
         throw new Error("IPFS Upload Failed: Missing or Invalid Pinata API Keys.");
       }
 
-      const targetWallet = studentWallet.trim() || "0x0000000000000000000000000000000000000000";
+      const targetWallet = trimmedWallet || "0x0000000000000000000000000000000000000000";
       setStatus(`Registering on secure ledger...`);
       const contract = await getContract();
       const tx = await contract.issueCertificate(certId, studentName, matricNumber, degree, ipfsHash, user.institution, targetWallet);

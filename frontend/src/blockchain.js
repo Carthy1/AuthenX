@@ -1,9 +1,10 @@
 import { ethers } from "ethers";
 import CertificateABI from "./abis/Certificate.json"; 
+import DeployedAddress from "./abis/deployed_address.json";
 
 // Local Development Settings (Hardhat node)
 const LOCAL_RPC = "http://127.0.0.1:8545";
-const LOCAL_CONTRACT = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
+const LOCAL_CONTRACT = DeployedAddress.address || "0x5FbDB2315678afecb367f032d93F642f64180aa3";
 const LOCAL_KEY = "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80";
 
 // Public Production Web Settings (Celo Sepolia Testnet)

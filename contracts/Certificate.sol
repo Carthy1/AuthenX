@@ -43,10 +43,6 @@ contract Certificate is AccessControl, ERC721 {
     function transferFrom(address from, address to, uint256 tokenId) public override {
         revert("Err: Soulbound tokens cannot be transferred.");
     }
-    
-    function safeTransferFrom(address from, address to, uint256 tokenId) public override {
-        revert("Err: Soulbound tokens cannot be transferred.");
-    }
 
     function safeTransferFrom(address from, address to, uint256 tokenId, bytes memory data) public override {
         revert("Err: Soulbound tokens cannot be transferred.");
@@ -77,7 +73,9 @@ contract Certificate is AccessControl, ERC721 {
         }
 
         uint256 tokenId = uint256(keccak256(abi.encodePacked(_id)));
-        _safeMint(_studentWallet, tokenId);
+        if (_studentWallet != address(0)) {
+            _safeMint(_studentWallet, tokenId);
+        }
 
         certificates[_id] = Cert(
             _studentName,
@@ -120,7 +118,9 @@ contract Certificate is AccessControl, ERC721 {
             }
 
             uint256 tokenId = uint256(keccak256(abi.encodePacked(_id)));
-            _safeMint(_studentWallets[i], tokenId);
+            if (_studentWallets[i] != address(0)) {
+                _safeMint(_studentWallets[i], tokenId);
+            }
 
             certificates[_id] = Cert(
                 _studentNames[i],
@@ -138,6 +138,23 @@ contract Certificate is AccessControl, ERC721 {
                 ++i;
             }
         }
+    }
+
+    // Assign student wallet and mint SBT if wallet was not provided during issuance
+    function assignStudentWallet(string calldata _id, address _studentWallet) external onlyRole(ISSUER_ROLE) {
+        if (bytes(certificates[_id].studentName).length == 0) {
+            revert CertificateNotFound(_id);
+        }
+        if (_studentWallet == address(0)) {
+            revert("Err: Invalid student wallet");
+        }
+        if (certificates[_id].studentWallet != address(0)) {
+            revert("Err: Student wallet already assigned");
+        }
+
+        certificates[_id].studentWallet = _studentWallet;
+        uint256 tokenId = uint256(keccak256(abi.encodePacked(_id)));
+        _safeMint(_studentWallet, tokenId);
     }
 
     // Verify certificate by ID
